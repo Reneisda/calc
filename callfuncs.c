@@ -32,14 +32,64 @@ out_pq(char* str) {
     p = strtod(parsed_values, &end);
     q = strtod(end, NULL);
     pq(answer, p, q);
-    fprintf(stdout, "%f\n%f", answer[0], answer[1]);
+    fprintf(stdout, "%f\n%f\n", answer[0], answer[1]);
 
 }
 
+void
+out_fac(char* str) {
+    u_long in = strtol(str, NULL, 10);
+    mpz_t faculty;
+    mpz_init_set_ui(faculty, in);
+    fac(faculty);
+    mpz_out_str(stdout, base, faculty);
+    printf("\n");
+}
 
-/*
-void out_fac(char* str);
-void out_ncr(char* str);
-void out_bin_pdf(char* str);
-void out_bin_cdf(char* str);
-*/
+void
+out_ncr(char* str) {
+    u_long n, k;
+    mpz_t answer;
+    mpz_init(answer);
+    char* end;
+    char* parsed_values = get_val(str);
+    n = strtoul(parsed_values, &end, 10);
+    k = strtoul(end, NULL, 10);
+    ncr(answer, n, k);
+    mpz_out_str(stdout, base, answer);
+    printf("\n");
+}
+
+void
+out_bin_pdf(char* str) {
+    u_long n, k;
+    double p;
+    char* end;
+    mpf_t prob, answer;
+    char* parsed_values = get_val(str);
+    n = strtoul(parsed_values, &end, 10);
+    p = strtod(end, &end);
+    k = strtoul(end, NULL, 10);
+    mpf_init_set_d(prob, p);
+    mpf_init(answer);
+    bin_pdf(answer, n, prob, k);
+    mpf_out_str(stdout, base, precision, answer);
+    printf("\n");
+}
+
+void
+out_bin_cdf(char* str) {
+    u_long n, k;
+    double p;
+    char* end;
+    mpf_t prob, answer;
+    char* parsed_values = get_val(str);
+    n = strtoul(parsed_values, &end, 10);
+    p = strtod(end, &end);
+    k = strtoul(end, NULL, 10);
+    mpf_init_set_d(prob, p);
+    mpf_init(answer);
+    bin_cdf(answer, n, prob, k);
+    mpf_out_str(stdout, base, precision, answer);
+    printf("\n");
+}

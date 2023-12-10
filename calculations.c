@@ -23,13 +23,13 @@ fac(mpz_t x) {
     mpz_set_ui(tmp, 1);
     u_long fak = mpz_get_ui(x);
     mpz_set_ui(x, 1);
-    for (fak; fak > 0; fak--) {
+    for (; fak > 0; fak--) {
         mpz_mul_ui(x, tmp, fak);
         mpz_set(tmp, x);
     }
 }
 void
-ncr(mpz_t x, long n, long k) {
+ncr(mpz_t x, u_long n, u_long k) {
     mpz_t n_, k_, c, ans;
     mpz_init(n_); mpz_init(k_); mpz_init(c); mpz_init(ans);
     mpz_set_ui(n_, n); mpz_set_ui(k_, k); mpz_set_ui(c, n - k);
@@ -44,7 +44,7 @@ ncr(mpz_t x, long n, long k) {
 }
 
 void
-bin_cdf(mpf_t x, long n, mpf_t p, long k) {
+bin_cdf(mpf_t x, u_long n, mpf_t p, u_long k) {
     mpf_t tmp1; mpf_t tmp2; mpf_init(tmp1);  mpf_init(tmp2);
     mpf_set_ui(tmp1, 0); mpf_set_ui(tmp2, 0); mpf_set_ui(x, 0);
     for (long i = 0; i < k + 1; i++) {
@@ -55,7 +55,7 @@ bin_cdf(mpf_t x, long n, mpf_t p, long k) {
 }
 
 void
-bin_pdf(mpf_t x, long n, mpf_t p, long k) {
+bin_pdf(mpf_t x, u_long n, mpf_t p, u_long k) {
     mpf_t a, pMin, c, bin, nOverKF;
     mpz_t nOverKRes;
     mpf_init(a); mpf_init(pMin); mpf_init(c); mpf_init(bin); mpz_init(nOverKRes); mpf_init(nOverKF);
