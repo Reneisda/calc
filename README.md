@@ -1,5 +1,5 @@
 # calc
-command-line utility for calculating.
+command-line utility for calculating. <br>
 **supports**
 - faculty
 - pq
