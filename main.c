@@ -1,108 +1,72 @@
-#include <stdbool.h>
+#include "calculations.h"
+#include "callfuncs.h"
 #include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <math.h>
-#include <gmp.h>
+#include <argp.h>
 
-int p_out = 10;
-void binPdf(mpf_t x, long n, mpf_t p, long k);
+const char*argp_program_version = "calc 1.3";
+static char doc[] = "Your program description.";
+static char args_doc[] = "program-doc";
+const char* argp_program_bug_address = "(please don't)";
+static int pre_out, base;
 
-void pq(double *answer, double p, double q) {
-    double pHalf = p / 2;
-    double a = (pHalf) * -1;
-    double inSqr = pHalf * pHalf - q;
-    if (inSqr < 0) { fprintf(stderr, "Can't calculate sqrt of negative number: %f\n", inSqr); return; }
-    double b = sqrt(inSqr);
-    answer[0] = a + b;
-    answer[1] = a - b;
-}
 
-void fac(mpz_t x) {
-    mpz_t tmp;
-    mpz_init(tmp);
-    mpz_set_ui(tmp, 1);
-    u_long fak = mpz_get_ui(x);
-    mpz_set_ui(x, 1);
-    for (fak; fak > 0; fak--) {
-        mpz_mul_ui(x, tmp, fak);
-        mpz_set(tmp, x);
+
+static struct argp_option options[] = {
+        { "pq", 128, "NUMBER 1", 0,          "Calculates PQ-Formula of given numbers p, q        [-p {p},{q}]"},
+        { "fac", 'f', "NUMBER", 0,         "Calculates faculty of given number n               [-f {n}]"},
+        { "ncr", 'n', 0, 0,         "Calculates n over k for given numbers n, k         [-n {n},{k} ]"},
+        { "pdf", 129, 0, 0,  "Compare case insensitive instead of case sensitive."},
+        { "cdf", 130, 0, 0,  "Compare case insensitive instead of case sensitive."},
+        {"base", 'b',  "BASE", 0,      "base of the output (default: 10"},
+        {"precision", 'p',  "PRECISION", 0,      "base of the output (default: 10"},
+        { 0 }
+};
+
+struct arguments {
+    int base;
+    int precision;
+    char* value;
+    enum { HELP, PQ, FACULTY, NCR, BIN_PDF, BIN_CDF } action;
+};
+
+static error_t parse_opt(int key, char *arg, struct argp_state *state) {
+    uint8_t action_set = 0;
+    struct arguments *arguments = state->input;
+    switch (key) {
+        case 'l': base = 10; break;
+        case 128: arguments->action = PQ; arguments->value = arg; break;
+        case 'f': arguments->action = FACULTY; arguments->value = arg; break;
+        case 129: arguments->action = BIN_PDF; arguments->value = arg; break;
+        case 130: arguments->action = BIN_CDF; arguments->value = arg; break;
+        case 'n': arguments->action = NCR; arguments->value = arg; break;
+
+        case 'b': arguments->base = (int) strtol(arg, NULL, 10); break;
+        case 'p': arguments->precision = (int) strtol(arg, NULL, 10); break;
+
+        case ARGP_KEY_ARG: return 0;
+        default: return ARGP_ERR_UNKNOWN;
     }
-}
-void ncr(mpz_t x, long n, long k) {
-    mpz_t n_, k_, c, ans;
-    mpz_init(n_); mpz_init(k_); mpz_init(c); mpz_init(ans);
-    mpz_set_ui(n_, n); mpz_set_ui(k_, k); mpz_set_ui(c, n - k);
-    fac(n_);
-    fac(k_);
-    fac(c);
-    mpz_mul(ans, k_, c);
-    mpz_div(k_, n_, ans);
-    mpz_set(x, k_);
-    // free
-    mpz_clear(n_); mpz_clear(k_); mpz_clear(c); mpz_clear(ans);
+    return 0;
 }
 
-double binCdf(mpf_t x, long n, mpf_t p, long k) {
-    mpf_t tmp1; mpf_t tmp2; mpf_init(tmp1);  mpf_init(tmp2);
-    mpf_set_ui(tmp1, 0); mpf_set_ui(tmp2, 0); mpf_set_ui(x, 0);
-    for (long i = 0; i < k + 1; i++) {
-        binPdf(tmp1, n, p, i);
-        mpf_add(x, tmp1, tmp2);
-        mpf_set(tmp2, x);
-    }
-}
+static struct argp argp = { options, parse_opt, args_doc, doc, 0, 0, 0 };
 
-void binPdf(mpf_t x, long n, mpf_t p, long k) {
-    mpf_t a, pMin, c, bin, nOverKF;
-    mpz_t nOverKRes;
-    mpf_init(a); mpf_init(pMin); mpf_init(c); mpf_init(bin); mpz_init(nOverKRes); mpf_init(nOverKF);
-    mpf_pow_ui(a, p, k);               // p^k
-    mpf_ui_sub(pMin, 1L, p);           // p - 1
-    mpf_pow_ui(c, pMin, (n - k));      // (p - 1)^(n-k)
-    mpf_mul(x, a, c);
-    ncr(nOverKRes, n, k);
-    mpf_set_z(nOverKF, nOverKRes);
-    mpf_mul(a, x, nOverKF);
-    mpf_set(x, a);
-    mpf_clear(a); mpf_clear(pMin); mpf_clear(c); mpf_clear(bin); mpz_clear(nOverKRes); mpf_clear(nOverKF);
+int
+main(int argc, char* argv[]) {
+    pre_out = 10;
+    base = 10;
+    struct arguments arguments;
 
-}
+    arguments.action = HELP;
+    arguments.base = 10;
+    arguments.precision = 10;
 
-int main(int argc, char *argv[]) {
-    int opt;
-    enum { PQ_MODE, FAK_MODE, DEFAULT } mode = DEFAULT;
-    while ((opt = getopt(argc, argv, "pfb")) != -1) {
-        switch (opt) {
-            case 'p': mode = PQ_MODE; break;
-            case 'f': mode = FAK_MODE; break;
-            case 'b': mode = DEFAULT; break;
-            default:
-                fprintf(stdout, "calc 1.2\nTry -h or --help\n");
-        }
-    }
-    double answer[2];
-    mpz_t a_ui; mpz_init(a_ui);
+    argp_parse(&argp, argc, argv, 0, 0, &arguments);
+    printf("Action: %s\n", arguments.action == PQ ? "PQ" : arguments.action == FACULTY ? "Fac": "HELP");
+    printf("Base: %d\n", arguments.base);
+    printf("Precision: %d\n", arguments.precision);
 
-    switch (mode) {
-        case PQ_MODE:
-            pq(answer, strtod(argv[optind], NULL),
-               strtod(argv[optind + 1], NULL));
-            printf("x1: %f\nx2: %f\n", answer[0], answer[1]);
-            break;
-        case FAK_MODE:
-            printf("%s\n", argv[optind + 1]);               //FIXME
-            mpz_init_set_str(a_ui, argv[optind + 1], 10);
-            fac(a_ui);
-            mpz_out_str(stdout, 10, a_ui);
-            printf("\n");
-            break;
-        default:
-            fprintf(stderr, "Something went wrong\n"); break;
-    }
-    // Now optind (declared extern int by <unistd.h>) is the index of the first non-option argument.
-    // If it is >= argc, there were no non-option arguments.
-
-    // ...
+    init(10, 10);
+    out_pq("5,4");
     return 0;
 }
