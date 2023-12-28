@@ -1,7 +1,8 @@
 #include <stdio.h>
-#include "callfuncs.h"
 #include <string.h>
-#include <math.h>
+#include "calculations.h"
+#include "callfuncs.h"
+
 static int base, precision;
 
 void
@@ -13,7 +14,7 @@ init(int base_, int precision_) {
 char*
 get_val(char* str) {
     size_t size = strlen(str);
-    char* values = malloc(size);
+    char* values = (char*) malloc(size);
     memcpy(values, str, sizeof(char) * size);
     for (int i = 0; values[i] != '\0'; i++) {
         if (values[i] == ',') {
@@ -92,4 +93,23 @@ out_bin_cdf(char* str) {
     bin_cdf(answer, n, prob, k);
     mpf_out_str(stdout, base, precision, answer);
     printf("\n");
+}
+
+double
+out_bisection(char* str, double a, double b) {
+    double m;                            // left, right border
+    func fun = func_get(str);
+
+    while ((b - a) > 0.0001) {
+        m = (a + b) / 2;
+        printf("a: %f\tb: %f\tm: %f\n", a, b, m);
+        if (get_y(&fun, a) * get_y(&fun, m) < 0) {          // Zero between a and m
+            b = m;
+        } else {
+            a = m;
+        }
+    }
+    printf("f(x) = %f\n", get_y(&fun, 4));
+    printf("X0 = %f\n", m);
+    return m;
 }

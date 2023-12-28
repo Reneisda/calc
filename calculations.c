@@ -2,6 +2,7 @@
 #include <gmp.h>
 #include "calculations.h"
 
+
 void
 pq(double* answer, double p, double q) {
     double pHalf = p / 2;
@@ -16,7 +17,7 @@ pq(double* answer, double p, double q) {
     answer[1] = a - b;
 }
 
-void
+void                        //TODO threaded version of func
 fac(mpz_t x) {
     mpz_t tmp;
     mpz_init(tmp);
@@ -28,6 +29,7 @@ fac(mpz_t x) {
         mpz_set(tmp, x);
     }
 }
+
 void
 ncr(mpz_t x, u_long n, u_long k) {
     mpz_t n_, k_, c, ans;
