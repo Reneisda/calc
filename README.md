@@ -6,4 +6,5 @@ command-line utility for calculating. <br>
 - ncr
 - binompdf
 - binomcdf
+- bisection
 more features are on the way

@@ -5,10 +5,10 @@ CC = gcc
 
 
 compile : main.c func.c calculations.c callfuncs.c
-	$(CC) main.c func.c calculations.c callfuncs.c -o calc $(CCFLAGS)
+	$(CC) main.c func.c calculations.c callfuncs.c -o bin/calc $(CCFLAGS)
 
 debug : main.c func.c calculations.c callfuncs.c
-	$(CC) main.c func.c calculations.c callfuncs.c -o calc $(CCFLAGS) $(DEBUGFLAGS)
+	$(CC) main.c func.c calculations.c callfuncs.c -o bin/calc $(CCFLAGS) $(DEBUGFLAGS)
 
 clear-screen:
 	clear
