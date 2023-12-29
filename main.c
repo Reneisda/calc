@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <argp.h>
 
-const char* argp_program_version = "calc 1.5.1";
+const char* argp_program_version = "calc 1.5.2";
 static char doc[] = "Your program description.";
 static char args_doc[] = "program-doc";
 const char* argp_program_bug_address = "(please don't)";

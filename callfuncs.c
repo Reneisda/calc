@@ -111,5 +111,6 @@ out_bisection(char* str, double a, double b) {
     }
     printf("f(x) = %f\n", get_y(&fun, 4));
     printf("X0 = %f\n", m);
+    func_free(&fun);
     return m;
 }

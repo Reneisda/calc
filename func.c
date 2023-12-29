@@ -10,14 +10,10 @@ struct val_end_pos {
     char* end_pos;
 };
 
-void
-func_free(func* f) {
+void func_free(func* f) {
     free(f->coefficient);
     free(f->exp);
-    free(f);
 }
-
-
 double
 get_y(func* f, double x) {
     double value = 0;
