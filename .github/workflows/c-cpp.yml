@@ -13,5 +13,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
+    - name: make dir
+      run: mkdir bin
+
     - name: make compile
       run: make compile
