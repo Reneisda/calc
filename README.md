@@ -7,4 +7,5 @@ command-line utility for calculating. <br>
 - binompdf
 - binomcdf
 - bisection
+<br>
 more features are on the way
