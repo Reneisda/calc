@@ -14,6 +14,7 @@ void func_free(func* f) {
     free(f->coefficient);
     free(f->exp);
 }
+
 double
 get_y(func* f, double x) {
     double value = 0;
@@ -57,6 +58,11 @@ get_coefficient(char* pos, val_endptr* v) {
     if (pos[0] == 'x') {
         v->value = 1.F;
         v->end_pos = pos + 1;
+        return;
+    }
+    if (pos[0] == '-' && pos[1] == 'x') {
+        v->value = -1.F;
+        v->end_pos = pos + 2;
         return;
     }
 

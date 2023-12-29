@@ -71,3 +71,20 @@ bin_pdf(mpf_t x, u_long n, mpf_t p, u_long k) {
     mpf_set(x, a);
     mpf_clear(a); mpf_clear(pMin); mpf_clear(c); mpf_clear(bin); mpz_clear(nOverKRes); mpf_clear(nOverKF);
 }
+
+double
+bisection(func* f, double a, double b) {
+    double m;                            // left, right border
+
+    while ((b - a) > 0.0001) {
+        m = (a + b) / 2;
+        if (get_y(f, a) * get_y(f, m) <= 0) {          // Zero between a and m
+            b = m;
+        }
+        else {
+            a = m;
+        }
+    }
+    func_free(f);
+    return m;
+}

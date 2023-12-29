@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <string.h>
-#include "calculations.h"
 #include "callfuncs.h"
 
 static int base, precision;
@@ -95,22 +94,8 @@ out_bin_cdf(char* str) {
     printf("\n");
 }
 
-double
-out_bisection(char* str, double a, double b) {
-    double m;                            // left, right border
+void
+out_bisection(char* str, double x, double y) {
     func fun = func_get(str);
-
-    while ((b - a) > 0.0001) {
-        m = (a + b) / 2;
-        printf("a: %f\tb: %f\tm: %f\n", a, b, m);
-        if (get_y(&fun, a) * get_y(&fun, m) < 0) {          // Zero between a and m
-            b = m;
-        } else {
-            a = m;
-        }
-    }
-    printf("f(x) = %f\n", get_y(&fun, 4));
-    printf("X0 = %f\n", m);
-    func_free(&fun);
-    return m;
+    printf("%f\n", bisection(&fun, x, y));
 }

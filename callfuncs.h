@@ -1,5 +1,4 @@
 #include "calculations.h"
-#include "func.h"
 
 #ifndef CALC_CALLFUNCS_H
 #define CALC_CALLFUNCS_H
@@ -12,4 +11,4 @@ void out_ncr(char* str);
 void out_bin_pdf(char* str);
 void out_bin_cdf(char* str);
 func get_func(char* str);
-double out_bisection(char* str, double a, double b);
+void out_bisection(char* str, double x, double y);
