@@ -29,8 +29,12 @@ fac(mpz_t x) {
     }
 }
 
-void
+void                        //TODO optimise
 ncr(mpz_t x, u_long n, u_long k) {
+    if (n < k) {
+        mpz_set_ui(x, 0);
+        return;
+    }
     mpz_t n_, k_, c, ans;
     mpz_init(n_); mpz_init(k_); mpz_init(c); mpz_init(ans);
     mpz_set_ui(n_, n); mpz_set_ui(k_, k); mpz_set_ui(c, n - k);

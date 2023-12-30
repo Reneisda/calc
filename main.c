@@ -10,7 +10,7 @@
 
 #endif
 
-const char* argp_program_version = "calc 1.6.3";
+const char* argp_program_version = "calc 1.6.4";
 static char doc[] = "Your program description.";
 static char args_doc[] = "program-doc";
 const char* argp_program_bug_address = "(please don't)";
@@ -24,8 +24,8 @@ static struct argp_option options[] = {
         { "cdf", 130, "n,p,k", 0,               "calculates the binomial-cdf"},
         {"bisection", 'b',  "function", 0,      "bisection to determine Zero of a function"},
         {"gauss", 'g', "function", 0,           "gauss to determine Zero of a function"},
-        {"param a", 'x',  "left limit", 0,               "left limit for bisection/gauss"},
-        {"param b", 'y',  "right limit", 0,               "right limit for bisection/gauss"},
+        {"param x", 'x',  "left limit", 0,               "left limit for bisection/gauss"},
+        {"param y", 'y',  "right limit", 0,               "right limit for bisection/gauss"},
 
 
         {"base", 'B',  "BASE", 0,               "base of the output (default: 10)"},
