@@ -16,12 +16,37 @@ void func_free(func* f) {
 }
 
 double
-get_y(func* f, double x) {
+func_y(func* f, double x) {
     double value = 0;
-    for (int i = 0; i <= f->size; i++) {
+    for (int i = 0; i <= f->size; ++i) {
         value += pow(x, f->exp[i]) * f->coefficient[i];
     }
     return value;
+}
+
+void
+cleanup(func* f) {
+    for (int i = 0; i < f->size; i++) {
+        if (f->coefficient[i] == 0) {
+            for (int j = i; j < f->size; j++) {
+                f->coefficient[j] = f->coefficient[j + 1];
+                --f->size;
+            }
+        }
+    }
+}
+
+void
+func_derive(func* f) {
+    for (int i = 0; i < f->size; ++i) {
+        if (f->exp[i] == 0) {
+            f->coefficient[i] = 0;
+            continue;
+        }
+        f->coefficient[i] *= f->exp[i];
+        --f->exp[i];
+    }
+    cleanup(f);
 }
 
 void
@@ -39,25 +64,37 @@ func_print(func* f) {
 
 void
 func_print_raw(func* f) {
-    printf("Size: %lu\n", f->size);
-    for (int i = 0; i < f->size; i++) {
-        printf("%f ", f->coefficient[i]);
+    printf("Size: %zu\n", f->size);
+    for (int i = 0; i < f->size; ++i) {
+        printf("%f\t", f->exp[i]);
     }
     printf("\n");
-    for (int i = 0; i < f->size; i++) {
-        printf("%f ", f->exp[i]);
+    for (int i = 0; i < f->size; ++i) {
+        printf("%f\t", f->coefficient[i]);
     }
     printf("\n");
 }
-/*
- * Input-scheme:
- * ax^b+cx^d-ex^4
- */
+
+void
+func_copy(func* dest, func* src) {
+    dest->coefficient = (double*) malloc(sizeof(double) * src->size);
+    dest->exp = (double*) malloc(sizeof(double) * src->size);
+    dest->size = src->size;
+
+    memcpy(dest->coefficient, src->coefficient, src->size * sizeof(double));
+    memcpy(dest->exp, src->exp, src->size * sizeof(double));
+}
+
 void
 get_coefficient(char* pos, val_endptr* v) {
     if (pos[0] == 'x') {
         v->value = 1.F;
         v->end_pos = pos + 1;
+        return;
+    }
+    if (pos[0] == '+' && pos[1] == 'x') {
+        v->value = 1.F;
+        v->end_pos = pos + 2;
         return;
     }
     if (pos[0] == '-' && pos[1] == 'x') {
@@ -89,26 +126,34 @@ get_exp(char* pos, val_endptr* v) {
 
 func
 func_get(char* str) {
+    size_t mem_size = 8;
     func f;
     f.size = 0;
     size_t len = strlen(str);
     char* init_pos = str;
 
     if (strchr(str, 'x') == NULL) {                 // eg. 20, -69
-        f.size = 0;
-        f.coefficient = NULL;
-        f.exp = NULL;
+        f.coefficient = (double*) malloc(sizeof(double));
+        f.exp = (double*) malloc(sizeof(double));
+        f.size = 1;
+        f.coefficient[0] = strtod(str, NULL);
+        f.exp[0] = 0;
         return f;
     }
 
-    f.coefficient = (double*) malloc(sizeof(double) * 20);
-    f.exp = (double*) malloc(sizeof(double) * 20);
+    f.coefficient = (double*) malloc(sizeof(double) * mem_size);
+    f.exp = (double*) malloc(sizeof(double) * mem_size);
     val_endptr coeff;
     val_endptr expon;
 
     while (init_pos + len > str) {
         if (str[0] == 0) {
             break;
+        }
+        if (f.size > mem_size - 1) {                // resize
+            mem_size *= 2;
+            f.coefficient = realloc((f.coefficient), (mem_size) * sizeof(double));
+            f.exp = realloc((f.exp), (mem_size) * sizeof(double));
         }
         get_coefficient(str, &coeff);
         get_exp(coeff.end_pos, &expon);

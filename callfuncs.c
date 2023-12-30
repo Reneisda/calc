@@ -96,6 +96,13 @@ out_bin_cdf(char* str) {
 
 void
 out_bisection(char* str, double x, double y) {
-    func fun = func_get(str);
-    printf("%f\n", bisection(&fun, x, y));
+    func f = func_get(str);
+    printf("%f\n", bisection(&f, x, y));
+    func_free(&f);
+}
+
+void out_newton_zero(char* str, double x) {
+    func f = func_get(str);
+    printf("%f\n", newton_zero(&f, x));
+    func_free(&f);
 }

@@ -1,8 +1,16 @@
 #include "callfuncs.h"
 #include <stdio.h>
+
+#ifdef __linux__
 #include <argp.h>
 
-const char* argp_program_version = "calc 1.5.3";
+#elif _WIN32
+#include "argp-standalone/include/argp-standalone/argp.h"
+    #define u_long unsigned long
+
+#endif
+
+const char* argp_program_version = "calc 1.6.3";
 static char doc[] = "Your program description.";
 static char args_doc[] = "program-doc";
 const char* argp_program_bug_address = "(please don't)";
@@ -15,6 +23,7 @@ static struct argp_option options[] = {
         { "pdf", 129, "n,p,k", 0,               "calculates the binomial-pdf"},
         { "cdf", 130, "n,p,k", 0,               "calculates the binomial-cdf"},
         {"bisection", 'b',  "function", 0,      "bisection to determine Zero of a function"},
+        {"gauss", 'g', "function", 0,           "gauss to determine Zero of a function"},
         {"param a", 'x',  "left limit", 0,               "left limit for bisection/gauss"},
         {"param b", 'y',  "right limit", 0,               "right limit for bisection/gauss"},
 
@@ -30,7 +39,7 @@ struct arguments {
     char* value;
     double limit1;
     double limit2;
-    enum { HELP, PQ, FACULTY, NCR, BIN_PDF, BIN_CDF, BISECTION } action;
+    enum { HELP, PQ, FACULTY, NCR, BIN_PDF, BIN_CDF, BISECTION, NEWTON_ZERO } action;
 };
 
 static error_t
@@ -43,8 +52,9 @@ parse_opt(int key, char *arg, struct argp_state *state) {
         case 130: arguments->action = BIN_CDF; arguments->value = arg; break;
         case 'n': arguments->action = NCR; arguments->value = arg; break;
         case 'b': arguments->action = BISECTION; arguments->value = arg; break;
-        case 'x': arguments->action = BISECTION; arguments->limit1 = strtod(arg, NULL); break;
-        case 'y': arguments->action = BISECTION; arguments->limit2 = strtod(arg, NULL); break;
+        case 'g': arguments->action = NEWTON_ZERO; arguments->value = arg; break;
+        case 'x': arguments->limit1 = strtod(arg, NULL); break;
+        case 'y': arguments->limit2 = strtod(arg, NULL); break;
 
         case 'B': arguments->base = (int) strtol(arg, NULL, 10); break;
         case 'P': arguments->precision = (int) strtol(arg, NULL, 10); break;
@@ -88,6 +98,8 @@ main(int argc, char* argv[]) {
         case BISECTION:
             out_bisection(arguments.value, arguments.limit1, arguments.limit2);
             break;
+        case NEWTON_ZERO:
+            out_newton_zero(arguments.value, arguments.limit1);
     }
     return 0;
 }

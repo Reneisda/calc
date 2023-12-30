@@ -1,5 +1,4 @@
 #include <math.h>
-#include <gmp.h>
 #include "calculations.h"
 
 
@@ -75,16 +74,32 @@ bin_pdf(mpf_t x, u_long n, mpf_t p, u_long k) {
 double
 bisection(func* f, double a, double b) {
     double m;                            // left, right border
-
     while ((b - a) > 0.0001) {
         m = (a + b) / 2;
-        if (get_y(f, a) * get_y(f, m) <= 0) {          // Zero between a and m
+        if (func_y(f, a) * func_y(f, m) <= 0) {          // Zero between a and m
             b = m;
         }
         else {
             a = m;
         }
     }
-    func_free(f);
     return m;
+}
+
+double
+newton_zero(func* f, double a) {
+    func f_der;
+    func_copy(&f_der, f);
+    func_derive(&f_der);
+    double b = a + 1;
+    for (;;) {
+        if (fabs(b - a) < 0.0001) {
+            break;
+        }
+        b = a;
+        a = a - func_y(f, a) / func_y(&f_der, a);
+    }
+
+    func_free(&f_der);
+    return a;
 }
