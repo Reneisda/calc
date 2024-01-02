@@ -1,4 +1,4 @@
-CCFLAGS = -Wall -lgmp -lm
+CCFLAGS = -Wall -lgmp -lm -fopenmp
 DEBUGFLAGS = -g
 CC = gcc
 WINCC = x86_64-w64-mingw32-gcc

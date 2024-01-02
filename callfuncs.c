@@ -47,6 +47,20 @@ out_fac(char* str) {
 }
 
 void
+out_npr(char* str) {
+    u_long n, k;
+    mpz_t answer;
+    mpz_init(answer);
+    char* end;
+    char* parsed_values = get_val(str);
+    n = strtoul(parsed_values, &end, 10);
+    k = strtoul(end, NULL, 10);
+    npr(answer, n, k);
+    mpz_out_str(stdout, base, answer);
+    printf("\n");
+}
+
+void
 out_ncr(char* str) {
     u_long n, k;
     mpz_t answer;
@@ -106,3 +120,4 @@ void out_newton_zero(char* str, double x) {
     printf("%f\n", newton_zero(&f, x));
     func_free(&f);
 }
+

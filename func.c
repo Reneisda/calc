@@ -26,7 +26,7 @@ func_y(func* f, double x) {
 
 void
 cleanup(func* f) {
-    for (int i = 0; i < f->size; i++) {
+    for (int i = 0; i < f->size; ++i) {
         if (f->coefficient[i] == 0) {
             for (int j = i; j < f->size; j++) {
                 f->coefficient[j] = f->coefficient[j + 1];

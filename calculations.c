@@ -1,4 +1,4 @@
-#include <math.h>
+#include <omp.h>
 #include "calculations.h"
 
 
@@ -15,17 +15,20 @@ pq(double* answer, double p, double q) {
     answer[0] = a + b;
     answer[1] = a - b;
 }
-
 void                        //TODO threaded version of func
 fac(mpz_t x) {
-    mpz_t tmp;
-    mpz_init(tmp);
-    mpz_set_ui(tmp, 1);
     u_long fak = mpz_get_ui(x);
     mpz_set_ui(x, 1);
     for (; fak > 0; fak--) {
-        mpz_mul_ui(x, tmp, fak);
-        mpz_set(tmp, x);
+        mpz_mul_ui(x, x, fak);
+    }
+}
+
+void
+npr(mpz_t x, u_long n, u_long k) {
+    mpz_set_ui(x, k + 1);
+    for (u_long i = k + 2; i <= n; i++) {
+        mpz_mul_ui(x, x, i);
     }
 }
 

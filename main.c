@@ -10,7 +10,7 @@
 
 #endif
 
-const char* argp_program_version = "calc 1.6.4";
+const char* argp_program_version = "calc 1.7.4";
 static char doc[] = "Your program description.";
 static char args_doc[] = "program-doc";
 const char* argp_program_bug_address = "(please don't)";
@@ -19,6 +19,7 @@ const char* argp_program_bug_address = "(please don't)";
 static struct argp_option options[] = {
         { "pq", 'p', "p,q", 0,                  "Calculates PQ-Formula of given numbers"},
         { "fac", 'f', "n", 0,                   "Calculates faculty of given number n"},
+        {"npr", 'r', "n,k", 0,                  "Calculates the permutation of k in n"},
         { "ncr", 'n', "n,k", 0,                 "Calculates n over k for given numbers n, k"},
         { "pdf", 129, "n,p,k", 0,               "calculates the binomial-pdf"},
         { "cdf", 130, "n,p,k", 0,               "calculates the binomial-cdf"},
@@ -39,7 +40,7 @@ struct arguments {
     char* value;
     double limit1;
     double limit2;
-    enum { HELP, PQ, FACULTY, NCR, BIN_PDF, BIN_CDF, BISECTION, NEWTON_ZERO } action;
+    enum { HELP, PQ, FACULTY, NCR, NPR, BIN_PDF, BIN_CDF, BISECTION, NEWTON_ZERO } action;
 };
 
 static error_t
@@ -50,6 +51,7 @@ parse_opt(int key, char *arg, struct argp_state *state) {
         case 'f': arguments->action = FACULTY; arguments->value = arg; break;
         case 129: arguments->action = BIN_PDF; arguments->value = arg; break;
         case 130: arguments->action = BIN_CDF; arguments->value = arg; break;
+        case 'r': arguments->action = NPR; arguments->value = arg; break;
         case 'n': arguments->action = NCR; arguments->value = arg; break;
         case 'b': arguments->action = BISECTION; arguments->value = arg; break;
         case 'g': arguments->action = NEWTON_ZERO; arguments->value = arg; break;
@@ -85,6 +87,9 @@ main(int argc, char* argv[]) {
             break;
         case FACULTY:
             out_fac(arguments.value);
+            break;
+        case NPR:
+            out_npr(arguments.value);
             break;
         case NCR:
             out_ncr(arguments.value);
