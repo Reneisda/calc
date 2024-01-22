@@ -1,4 +1,4 @@
-CCFLAGS = -Wall -lgmp -lm -fopenmp -lOpenCL
+CCFLAGS = -Wall -lgmp -lm -fopenmp
 OPT = -O3
 DEBUGFLAGS = -g
 CC = gcc
