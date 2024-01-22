@@ -14,4 +14,5 @@ void out_bin_cdf(char* str);
 func get_func(char* str);
 void out_bisection(char* str, double x, double y);
 void out_newton_zero(char* str, double x);
+void out_rand_matrix_determinant(char* str);
 

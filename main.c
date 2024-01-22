@@ -11,7 +11,7 @@
 #endif
 
 const char* argp_program_version = "calc 1.7.4";
-static char doc[] = "Your program description.";
+static char doc[] = "doc";
 static char args_doc[] = "program-doc";
 const char* argp_program_bug_address = "(please don't)";
 
@@ -25,8 +25,9 @@ static struct argp_option options[] = {
         { "cdf", 130, "n,p,k", 0,               "calculates the binomial-cdf"},
         {"bisection", 'b',  "function", 0,      "bisection to determine Zero of a function"},
         {"gauss", 'g', "function", 0,           "gauss to determine Zero of a function"},
-        {"param x", 'x',  "left limit", 0,               "left limit for bisection/gauss"},
-        {"param y", 'y',  "right limit", 0,               "right limit for bisection/gauss"},
+        {"param x", 'x',  "left limit", 0,      "left limit for bisection/gauss"},
+        {"param y", 'y',  "right limit", 0,     "right limit for bisection/gauss"},
+        {"rmat", 131, "size", 0,               "calculates random matrix of size {size}"},
 
 
         {"base", 'B',  "BASE", 0,               "base of the output (default: 10)"},
@@ -40,7 +41,7 @@ struct arguments {
     char* value;
     double limit1;
     double limit2;
-    enum { HELP, PQ, FACULTY, NCR, NPR, BIN_PDF, BIN_CDF, BISECTION, NEWTON_ZERO } action;
+    enum { HELP, PQ, FACULTY, NCR, NPR, BIN_PDF, BIN_CDF, BISECTION, NEWTON_ZERO, RAND_MATRIX } action;
 };
 
 static error_t
@@ -51,6 +52,7 @@ parse_opt(int key, char *arg, struct argp_state *state) {
         case 'f': arguments->action = FACULTY; arguments->value = arg; break;
         case 129: arguments->action = BIN_PDF; arguments->value = arg; break;
         case 130: arguments->action = BIN_CDF; arguments->value = arg; break;
+        case 131: arguments->action = RAND_MATRIX; arguments->value = arg; break;
         case 'r': arguments->action = NPR; arguments->value = arg; break;
         case 'n': arguments->action = NCR; arguments->value = arg; break;
         case 'b': arguments->action = BISECTION; arguments->value = arg; break;
@@ -105,6 +107,8 @@ main(int argc, char* argv[]) {
             break;
         case NEWTON_ZERO:
             out_newton_zero(arguments.value, arguments.limit1);
+        case RAND_MATRIX:
+            out_rand_matrix_determinant(arguments.value);
     }
     return 0;
 }

@@ -1,7 +1,6 @@
 #include <omp.h>
 #include "calculations.h"
 
-
 void
 pq(double* answer, double p, double q) {
     double pHalf = p / 2;
@@ -80,7 +79,7 @@ bin_pdf(mpf_t x, u_long n, mpf_t p, u_long k) {
 
 double
 bisection(func* f, double a, double b) {
-    double m;                            // left, right border
+    double m = 0.f;                            // left, right border
     while ((b - a) > 0.0001) {
         m = (a + b) / 2;
         if (func_y(f, a) * func_y(f, m) <= 0) {          // Zero between a and m

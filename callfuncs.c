@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <string.h>
 #include "callfuncs.h"
+#include "vector.h"
+#include "matrix.h"
 
 static int base, precision;
 
@@ -119,5 +121,20 @@ void out_newton_zero(char* str, double x) {
     func f = func_get(str);
     printf("%f\n", newton_zero(&f, x));
     func_free(&f);
+}
+
+void out_rand_matrix_determinant(char* str) {
+    size_t size = strtoul(str, NULL, 10);
+    //matrix_t m1;
+    matrix_2_t m2;
+    //mat_init_rand(&m1, (int) size);
+    mat_2_init_rand(&m2, (int) size);
+    //convert_m2_to_m(&m2, &m1);
+    //mat_print(&m1);
+    //mat_2_print(&m2);
+    //printf("Determinante %f\n", mat_det_gauss2(&m1));
+    printf("Determinante %f\n", mat_2_det_gauss(&m2));
+    //printf("\n");
+    //mat_print(&m);
 }
 
