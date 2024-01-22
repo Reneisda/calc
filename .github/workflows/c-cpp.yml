@@ -16,5 +16,5 @@ jobs:
     - name: make dir
       run: mkdir bin
 
-    - name: make compile
-      run: make compile
+    - name: bin/calc
+      run: bin/calc
